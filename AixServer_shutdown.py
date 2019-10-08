@@ -1,40 +1,40 @@
+import paramiko
+from pathlib import Path
+import time
+        
+
 def server_shutdown(servername= None):
     try:
-        import paramiko
-        import os
-        import platform
-        from pathlib import Path
-        import time
-        
-        HOST = "mgtpp0008"
+        HOST = "40.121.154.135"
         PORT = 22
         file = "secret-server-key"
-        #data_folder = Path("/var/openfaas/secrets/")
-        #key_file = data_folder / file
-        #f = open(key_file)
-        #server_key = f.read()
+        data_folder = Path("/var/openfaas/secrets/")
+        key_file = data_folder / file
+        f = open(key_file)
+        server_key = f.read()
 
         #Establishing connection to the gatewayserver
         try:
             conn = paramiko.SSHClient()
             conn.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-            conn.connect(hostname = HOST, port = PORT, username="skutta1", password="1Optum23")
+            conn.connect(hostname = HOST, port = PORT, username="kuttappys", password="Abcd!2345678")
             print("successfully connected on port :", HOST)
             try:
-                command = "ssh -t"+servername+ "sudo shutdown -h now"
-                stdin, stdout, stderr = conn.exec_command(command)
-                stdin.write(serverkey)
-                print("Waiting for 10 seconds to shutdown completely and then try connection is alive or not")
-                time.sleep(10)
+                command_pbrun = "pbrun su -"
+                command_ssh = "ssh -t"+servername+ "shutdown  -force"
+                stdin, stdout, stderr = conn.exec_command(command_pbrun)
+                stdin.write(server_key)
+                time.sleep(10)                      #sleep program for 10 seconds after pbrun server key entered 
+                stdin, stdout, stderr = conn.exec_command(command_ssh) 
+                print("Waiting for 5minutes to shutdown completely and then try connection is alive or not")
+                time.sleep(300)
+                print("Checking for server connection again to test if shutdown is successful")
                 command = "ssh -t"+servername
                 stdin, stdout, stderr = conn.exec_command(command)
-                if #if stdout.channel.recv_exit_status() != 0:
-
-                               print("Server is still on. Try again")
+                if stdout.channel.recv_exit_status() == 0:
+                    print("Server is still on. Try again")
                 else:
                     print("Shutdown successful")
-
-                   
             except Exception as e:
                 print("Error while executing commands on gateway server", e)
         except Exception as err:

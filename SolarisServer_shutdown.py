@@ -5,7 +5,7 @@ import time
 
 def server_shutdown(servername= None):
     try:
-        HOST = "13.90.142.73"
+        HOST = "40.121.154.135"
         PORT = 22
         file = "secret-server-key"
         data_folder = Path("/var/openfaas/secrets/")
@@ -20,7 +20,9 @@ def server_shutdown(servername= None):
             conn.connect(hostname = HOST, port = PORT, username="kuttappys", password="Abcd!2345678")
             print("successfully connected on port :", HOST)
             try:
-                command_ssh  = ""
+                command_pbrun = "pbrun su -"
+                command_ssh = "ssh -t"+servername+ "shutdown -i0 -g60 -y"
+                stdin, stdout, stderr = conn.exec_command(command_pbrun)
                 stdin.write(server_key)
                 time.sleep(10)                      #sleep program for 10 seconds after pbrun server key entered 
                 stdin, stdout, stderr = conn.exec_command(command_ssh) 
