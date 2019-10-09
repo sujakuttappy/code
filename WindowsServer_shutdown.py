@@ -18,16 +18,17 @@ def server_shutdown(servername= None):
             conn = paramiko.SSHClient()
             conn.set_missing_host_key_policy(paramiko.AutoAddPolicy())
             conn.connect(hostname = HOST, port = PORT, username="kuttappys", password="Abcd!2345678")
-            print("successfully connected on port :", HOST)
+            print("Successfully connected on gateway server :", HOST)
             try:
-                command_ssh  = ""
+                command_ssh  = "ssh"+servername 
+                stdin, stdout, stderr = conn.exec_command(command_ssh)
                 stdin.write(server_key)
-                time.sleep(10)                      #sleep program for 10 seconds after pbrun server key entered 
-                stdin, stdout, stderr = conn.exec_command(command_ssh) 
-                print("Waiting for 5minutes to shutdown completely and then try connection is alive or not")
-                time.sleep(300)
+                time.sleep(10)               
+                stdin, stdout, stderr = conn.exec_command("shutdown /s /f")
+                print("Waiting for 3 mins to shutdown completely and then try connection  if it is alive or not")
+                time.sleep(180)
                 print("Checking for server connection again to test if shutdown is successful")
-                command = "ssh -t"+servername
+                command = "ssh"+servername
                 stdin, stdout, stderr = conn.exec_command(command)
                 if stdout.channel.recv_exit_status() == 0:
                     print("Server is still on. Try again")
