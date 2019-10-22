@@ -8,10 +8,10 @@ def server_shutdown(servername= None):
         HOST = "13.90.142.73"
         PORT = 22
         file = "secret-server-key"
-        data_folder = Path("/var/openfaas/secrets/")
-        key_file = data_folder / file
-        f = open(key_file)
-        server_key = f.read()
+        # data_folder = Path("/var/openfaas/secrets/")
+        # key_file = data_folder / file
+        # f = open(key_file)
+        # server_key = f.read()
 
         #Establishing connection to the gatewayserver
         try:
